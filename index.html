@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CCL Quiz</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@2/dist/email.min.js"></script>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>CCL Quiz</h1>
+    <div id="quiz"></div>
+    <div id="result"></div>
+    <div id="email-section" style="display:none;">
+      <p>Enter your email to receive your results:</p>
+      <input type="email" id="userEmail" placeholder="Your email">
+      <button onclick="sendEmail()">Send Results</button>
+    </div>
+  </div>
+  <script>
+    const questions = [
+  {
+    "question": "A student notes 'Pre-Medicine' as their intended major. Which major should you include in the search to ensure relevant colleges are captured?",
+    "choices": [
+      "Chemistry",
+      "Nursing",
+      "Biology",
+      "Public Health",
+      "All of the above"
+    ],
+    "correctAnswer": "C",
+    "explanation": "Prior to generating the list, adding in Biology will help us capture a broader range of colleges that will suit the student well. Also add this Note in from (you can copy it in from the CCL Cheatsheet): \"We added biology to the major search to capture schools that offer a pre-med program or track, but not a major.\""
+  },
+  {
+    "question": "A student has a 3.93 unweighted GPA and a 1550 SAT score. They are in an AP-heavy curriculum and list their major as undecided. What should you do regarding bonus points?",
+    "choices": [
+      "Assign 1 point for academic strength",
+      "Assign 2 points for AP curriculum",
+      "Do not assign any bonus points",
+      "Assign 1 point for undecided major"
+    ],
+    "correctAnswer": "C",
+    "explanation": "Adding in any bonus points in for students who have high test scores and near perfect GPAs may begin to place the most selective colleges (the ones that universally belong in the Reach category) in Possible."
+  },
+  {
+    "question": "A student notes a desire to apply to BS/MD programs. You refer to the BS/MD document and see a few colleges on the students list offer these highly selective combined BS/MD program. As it meets the other criteria of what the student is looking for, you add in 2-3 more colleges that offer BS/MD as well. What should you include within the major field for that college?",
+    "choices": [
+      "This college guarantees admission to medical school.",
+      "BS/MD program",
+      "Pre-Med track available",
+      "Medical school partnership",
+      "Schools that offer a highly selective, combined BS/MD program are also noted. The placement of these schools on your list is based on admission into the traditional undergraduate program, not the more selective BS/MD track."
+    ],
+    "correctAnswer": "B",
+    "explanation": "Use the BS/MD program list (find it linked within the CCL Cheatsheet) to identify and all in BS/MD colleges to the list. Make sure to note in the majors field that those colleges offer BSMD programs. And yes, also include the Note about BS/MD selectivity."
+  },
+  {
+    "question": "A student lists 'Pre-Law' as their intended major. What should you do in order to capture colleges with relevant opportunities for the student?",
+    "choices": [
+      "Research/Google colleges that offer Legal Studies",
+      "Add in Political Science as a major",
+      "Add this to the Note: We added Political Science to the major search to capture schools that offer a pre-law program or track, but don't offer pre-law as a major.",
+      "B & C"
+    ],
+    "correctAnswer": "D",
+    "explanation": "Adding in Political Science as a major and also noting why you did so are both important steps here!"
+  },
+  {
+    "question": "The list generated does not include the student's own public flagship school and your best guess is that that school would meet (or is in the general ballpark of the student's size, setting, geography and selectivity parameters). What do you do?",
+    "choices": [
+      "You're good to go. If the college didn't show up when you hit generate, its not there for a good reason",
+      "Email Lisa & Nial to ask why that college didn't show up",
+      "Add in the college",
+      "Review the questionnaire to investigate why it didn't show up"
+    ],
+    "correctAnswer": "C",
+    "explanation": "Just go ahead and add it in! No other action necessary. Most often, it doesn't show up as it meets the student's criteria but just falls below the Probable range and was therefore automatically excluded."
+  },
+  {
+    "question": "A student explicitly asks for colleges that are LGBTQ-friendly. What resource should you recommend in the Notes section to help them explore suitable campuses?",
+    "choices": [
+      "College Board",
+      "CampusPrideIndex.org",
+      "Princeton Review",
+      "US News Rankings"
+    ],
+    "correctAnswer": "B",
+    "explanation": "Here is the language we recommend you add to the Note. You can find it in the CCL Cheatsheet: We recommend checking out campusprideindex.org as an excellent database of LGBTQ-friendly campuses."
+  },
+  {
+    "question": "You're reviewing a student with a 3.7 GPA and a 1500 SAT score. This student is taking an AP-heavy load in senior year and has built toward that with progressively challenging rigor throughout high school. Should you assign any bonus points based on their academic profile?",
+    "choices": [
+      "No bonus points should be added",
+      "Yes, 1 or 2 points for strength of rigor",
+      "Yes, 3 or 4 points for strength of rigor",
+      NaN
+    ],
+    "correctAnswer": "B",
+    "explanation": "As the student has a solid GPA and a strong score, we probably shouldn't add more than 2 points here despite the excellent rigor."
+  },
+  {
+    "question": "You're working on a list for a spring semester junior who put in a 200 for their Math and 200 for their EBRW SAT. It seems to you that they are yet to take the PSAT/SAT/ACT. How should you proceed when generating their college list?",
+    "choices": [
+      "Run the list test-optional and add that you did so to the Note",
+      "Use a fake score from the GPA/fake score table",
+      "Recommend they skip testing entirely in the note",
+      "Include only colleges that require testing",
+      "Reach out to CC Ed Supp with a link to the list asking them to check in with the student/family and request test scores"
+    ],
+    "correctAnswer": "E",
+    "explanation": "If the student is still in their junior spring semester, chances are they will be taking the test and we want to check in with them prior to running the list test-optional."
+  },
+  {
+    "question": "A student writes in the x-factors box that they are interested in 'Data Science'. What should you do to ensure their list reflects the availability of this emerging field?",
+    "choices": [
+      "Add Data Science in to the major search",
+      "Include a Note about Data Science",
+      "Make sure Computer Science in included in the major search",
+      "Research colleges that meet the student's criteria that offer data science as a program/major",
+      "B & C & D"
+    ],
+    "correctAnswer": "E",
+    "explanation": "Data Science doesn't yet exist as a major option within our database. CS lands up being the best proxy, so make sure that that exists as a major option. Please do so some research on colleges that meet the student's criteria that offer data science programs. We will soon have a Data Science cluster as a resource for you!"
+  },
+  {
+    "question": "A student lists 'Mechanical Engineering' as their intended major. What should you include in the major search to ensure comprehensive coverage?",
+    "choices": [
+      "Only Mechanical Engineering",
+      "General Engineering",
+      "Civil Engineering",
+      "Electrical Engineering"
+    ],
+    "correctAnswer": "B",
+    "explanation": "Adding in general engineering helps us capture colleges that might meet the student's preferences but don't break down engineering by subfield."
+  },
+  {
+    "question": "A student lists 'Aerospace Engineering' as their intended major. It seems from the questionnaire that they are truly only interested in this narrow field of engineering. What should you add to the major search to ensure broader coverage of relevant programs?",
+    "choices": [
+      "Only Aerospace Engineering",
+      "General Engineering",
+      "Mechanical Engineering",
+      "Electrical Engineering"
+    ],
+    "correctAnswer": "A",
+    "explanation": "This isn't necessarily a science but if you get the sense that the student has a very narrow interest within engineering, there's no need to add in general engineering."
+  },
+  {
+    "question": "You're generating a list for a student with a narrow geographic preference and a niche major. The resulting list has very few colleges. What should you do to address the short list and guide the student appropriately?",
+    "choices": [
+      "Leave the list as is",
+      "Add colleges to fill space",
+      "Adjust size and setting filters. Use the JR List to identify a few more collees to add from within the geographic region requested. Add in a note that acknowledges adjustment of size and setting parameters",
+      "Adjust geographic preference"
+    ],
+    "correctAnswer": "C",
+    "explanation": "We shouldn't really ever need to adjust the selected geography. Adjusting the size and setting filters and letting them know you did so should help you come up with some more options. Look to the CCL Cheatsheet for language you can use."
+  },
+  {
+    "question": "A student checks the box in the questionnaire saying that are not open to religious institutions. What action should you take?",
+    "choices": [
+      "Leave the list as is. Religious colleges are automatically filtered out when a student checks that box",
+      "Refer to the JR list and/or College Clusters and eliminate all religious institutions",
+      "Eliminate all ultra-religious colleges but don't delete Jesuit college like Fordham and Loyola Marymount",
+      "None of the above"
+    ],
+    "correctAnswer": "B",
+    "explanation": "Religious colleges are not automatically excluded when they check that box. Unless actively requested in the questionnaire, we should be in habit of excuding ultrareligious colleges (see Clusters or JR List). If the student tells us that they do not want religious colleges on the list, we should exclude all including the popular choices such as BC, Fordham, LMU, etc."
+  },
+  {
+    "question": "A student you generated a list for is interested in studying Computer Science. They are from Massachusetts. You notice that the University of Illinois Urbana-Champaign showed up as a Probable school for them. What do you do?",
+    "choices": [
+      "You're good to go. That's where the algorithm placed it.",
+      "Move it to the Reach category",
+      "Move on. The college list page includes a caveat that says that we don't assign selectivity categories on the basis of majors.",
+      "Move it to the Possible category"
+    ],
+    "correctAnswer": "B",
+    "explanation": "Public colleges like UIUC, UT, Georgia Tech, the UCs, Michigan, UW, Purdue, UF, Chapel Hill, UMD College Park, Wisconsin Madison, VA Tech, etc. should almost always land in the reach category when an out-of-state student is applying for highly selective programs (engineering, computer science, business). Use your best judgement when you are dealing with students with excellent academic records, but it helps to err on the side of being conservative with the placement of these colleges. We do have the language on the list page about placement influenced by major, yes, but we also don't want to present a list that just feels contrary to everything folks have heard about how selective some programs at some colleges are. We also have language in the CCL Cheatsheet that you can incude in your Note that underscores the influence of major on selectivity and how that adds uncertainty to this process."
+  },
+  {
+    "question": "You generated a list, made all the necessary adjustments, and added in the custom note. You hit save. What's next?",
+    "choices": [
+      "Once you have saved the list, review it to make sure the colleges you wished to delete are no longer there, AND make sure the Note it accurate to the student <confirm that the GPA, curriculum rigor, test score, majors>",
+      "Confirm that there are an adequate number of colleges in the Probable, Possible, and Reach sections. Read through the colleges to confirm that they are in the section they belong in.",
+      "Head over the CRM list page, change the status to List Final - Ready to Publish",
+      "Hit save after the change the status and log the amount of time you spent on the list (rounded up to the nearest 5 minutes)",
+      "All of the above"
+    ],
+    "correctAnswer": "E",
+    "explanation": "We're all human and make mistakes. It helps to check your work and roll through all the necessary steps carefully."
+  },
+  {
+    "question": "You see Lehigh as a Possible and it makes you think about that one time that Lisa and Nial made you do a quiz and mentioned Lehigh and Denison and Lafayette and WPI and RPI.. What do you think next?",
+    "choices": [
+      "Oh, they want me to the move these colleges up a selectivity step!",
+      "I'm the best\u2026",
+      "\u2026 and Lisa and Nial are so grateful for my contributions to the list team",
+      "All of the above"
+    ],
+    "correctAnswer": "D",
+    "explanation": "Yes, we can only make updates to where colleges land in terms of their selectivity once every few years. This means that we have to be extra mindful of where a few of them land. That's the last question! Thank you!!"
+  }
+];
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
